@@ -1,0 +1,43 @@
+apply plugin: 'groovy'
+
+dependencies {
+    compile gradleApi()
+    compile localGroovy()
+}
+
+apply plugin: 'maven-publish'
+
+publishing{
+    publications {
+        task javadocJar(type: Jar, dependsOn: groovydoc) {
+            classifier = 'javadoc'
+            from "${buildDir}/javadoc"
+        }
+
+        task sourcesJar(type: Jar) {
+            from sourceSets.main.allSource
+            classifier = 'sources'
+        }
+
+        mavenJava(MavenPublication) {
+            from components.java
+
+            artifact sourcesJar
+            artifact javadocJar
+
+            groupId 'com.neo'
+            artifactId 'helloPlugin'
+            version '0.1'
+
+        }
+
+    }
+
+    repositories{
+        maven {
+            // change to point to your repo, e.g. http://my.org/repo
+            url "../repo"
+        }
+    }
+}
+
